@@ -25,7 +25,7 @@ body {
 .container {
   width: 94%;
   max-width: 420px;
-  background: rgba(0,0,0,0.9);
+  background: rgba(0,0,0,0.92);
   padding: 22px;
   border-radius: 14px;
   box-shadow: 0 0 30px rgba(0,255,140,0.3);
@@ -106,23 +106,29 @@ Observação contínua
 Sessão nº ${count}
 `;
 
-// prepara texto para digitação segura
-const textoFormatado = texto
-  .replace(/ /g, "&nbsp;")
-  .replace(/\n/g, "<br>");
+// transforma texto em tokens seguros
+const tokens = [];
+for (let char of texto) {
+  if (char === "\n") {
+    tokens.push("<br>");
+  } else if (char === " ") {
+    tokens.push("&nbsp;");
+  } else {
+    tokens.push(char);
+  }
+}
 
 const log = document.getElementById("log");
 let i = 0;
 
 function digitar() {
-  if (i < textoFormatado.length) {
-    log.innerHTML += textoFormatado.charAt(i);
+  if (i < tokens.length) {
+    log.insertAdjacentHTML("beforeend", tokens[i]);
     i++;
     setTimeout(digitar, 22);
   }
 }
 
-// pequeno delay inicial (clima de sistema)
 setTimeout(digitar, 400);
 </script>
 
