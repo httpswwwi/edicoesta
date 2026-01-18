@@ -23,32 +23,31 @@ body {
 }
 
 .container {
-  width: 92%;
+  width: 94%;
   max-width: 420px;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0,0,0,0.9);
   padding: 22px;
   border-radius: 14px;
-  box-shadow: 0 0 28px rgba(0,255,140,0.25);
+  box-shadow: 0 0 30px rgba(0,255,140,0.3);
 }
 
 .log {
   font-size: 0.95rem;
   line-height: 1.6;
-  white-space: pre-line;
 }
 
 .cursor {
   display: inline-block;
   width: 8px;
-  height: 1.1em;
+  height: 1em;
   background: #00ff88;
   margin-left: 4px;
   animation: blink 1s infinite;
 }
 
 @keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
+  0%,50% { opacity: 1; }
+  51%,100% { opacity: 0; }
 }
 </style>
 </head>
@@ -68,15 +67,12 @@ function horaAtual() {
   });
 }
 
-// contador local (simula reconhecimento)
+// contador local
 let visitas = localStorage.getItem("stalkerCount");
 let count = visitas ? parseInt(visitas) + 1 : 1;
 localStorage.setItem("stalkerCount", count);
 
-let texto;
-
-if (count === 1) {
-texto = `
+let texto = (count === 1) ? `
 Iniciando rastreamento...
 Conexão estabelecida ✔
 
@@ -94,9 +90,7 @@ Permissão não concedida
 
 Monitoramento ativo
 Sessão nº ${count}
-`;
-} else {
-texto = `
+` : `
 Sistema reconheceu você
 Acesso repetido detectado ✔
 
@@ -111,11 +105,26 @@ Horário atualizado: ${horaAtual()}
 Observação contínua
 Sessão nº ${count}
 `;
-}
+
+// prepara texto para digitação segura
+const textoFormatado = texto
+  .replace(/ /g, "&nbsp;")
+  .replace(/\n/g, "<br>");
 
 const log = document.getElementById("log");
 let i = 0;
 
 function digitar() {
-  if (i < texto.length) {
-    const c =
+  if (i < textoFormatado.length) {
+    log.innerHTML += textoFormatado.charAt(i);
+    i++;
+    setTimeout(digitar, 22);
+  }
+}
+
+// pequeno delay inicial (clima de sistema)
+setTimeout(digitar, 400);
+</script>
+
+</body>
+</html>
